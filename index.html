@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Perpustakaan Ibu & Anak - Firebase</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Poppins:wght@400;500;600;700;800;900&family=Nunito+Sans:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;700;900&family=Manrope:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#f7f7f4; --card:#ffffff; --text:#193238; --muted:#667985; --line:#e5eceb;
+      --soft:#eef7f5; --primary:#2f7d7e; --secondary:#f7b7c8; --accent:#f6c453;
+      --danger:#be123c; --danger-bg:#fff1f2; --success:#047857; --success-bg:#ecfdf5;
+      --warning:#b45309; --warning-bg:#fffbeb; --font:'Inter',Arial,sans-serif; --fs:14px; --logo-bg:#f6c453; --logo-text:#ffffff;
+      --shadow:0 1px 3px rgba(15,23,42,.06);
+    }
+    *{box-sizing:border-box} body,body *{font-family:var(--font)!important} body{margin:0;background:var(--bg);color:var(--text);font-size:var(--fs)}
+    button,input,select,textarea{font:inherit} button{cursor:pointer} img{max-width:100%;display:block}
+    .hidden{display:none!important}.login{min-height:100vh;display:grid;place-items:center;padding:28px;background:linear-gradient(135deg,var(--primary),#75b6ad)}
+    .login-wrap{width:min(1120px,100%);display:grid;grid-template-columns:1fr 420px;gap:28px;align-items:center}
+    .login-hero{color:#fff}.login-hero h1{font-size:clamp(34px,5vw,58px);line-height:1;margin:0 0 16px;font-weight:900}.login-hero p{font-size:18px;line-height:1.7;opacity:.9;max-width:700px}
+    .login-card,.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:var(--shadow)}.login-card h2{margin-top:0}
+    .app-header{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+    .header-inner{max-width:1320px;margin:auto;padding:16px 22px;display:flex;justify-content:space-between;align-items:center;gap:16px}.brand{display:flex;align-items:center;gap:12px}.brand h1{font-size:23px;margin:0}.brand p{margin:3px 0 0;color:var(--muted)}
+    .logo{width:48px;height:48px;border-radius:15px;background:var(--logo-bg);display:grid;place-items:center;color:var(--logo-text);font-weight:900;overflow:hidden;flex:0 0 auto}.logo img{width:100%;height:100%;object-fit:cover}
+    .layout{max-width:1320px;margin:auto;padding:22px;display:grid;grid-template-columns:270px 1fr;gap:18px}.sidebar{background:#fff;border:1px solid var(--line);border-radius:20px;padding:10px;height:max-content;position:sticky;top:88px;box-shadow:var(--shadow)}
+    .nav{width:100%;border:0;background:transparent;text-align:left;padding:12px 13px;border-radius:12px;font-weight:800;color:#39545b;display:flex;gap:10px;align-items:center}.nav:hover{background:var(--soft)}.nav.active{background:var(--primary);color:#fff}.nav.export{border:1px solid var(--accent);background:#fffaf0;color:#75520a}
+    .main{min-width:0}.top-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.chip{background:var(--soft);border:1px solid var(--line);border-radius:999px;padding:8px 12px;font-weight:800;color:#39545b;font-size:13px}.chip.online{background:#ecfdf5;color:#047857}.chip.offline{background:#fff7ed;color:#c2410c}.chip.error{background:#fff1f2;color:#be123c}
+    .btn{border:0;border-radius:11px;padding:10px 14px;font-weight:900;display:inline-flex;align-items:center;gap:8px;justify-content:center}.btn.primary{background:var(--primary);color:#fff}.btn.secondary{background:var(--soft);color:#34545a;border:1px solid var(--line)}.btn.danger{background:var(--danger-bg);color:var(--danger)}.btn.success{background:var(--success-bg);color:var(--success)}
+    .section{display:flex;gap:12px;align-items:flex-start;margin-bottom:16px}.section .icon{width:42px;height:42px;border-radius:12px;background:var(--soft);display:grid;place-items:center}.section h2{margin:0;font-size:21px}.section p{margin:4px 0 0;color:var(--muted)}
+    .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}.stat .label{color:var(--muted);font-size:13px}.stat .num{font-size:32px;font-weight:900;margin-top:7px}
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.grid5{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+    label{display:block;font-weight:800;font-size:13px;margin-bottom:6px;color:#37515a} input,select,textarea{width:100%;border:1px solid var(--line);border-radius:11px;padding:10px 12px;background:#fff;color:var(--text);outline:none} input:focus,select:focus,textarea:focus{box-shadow:0 0 0 4px rgba(47,125,126,.15)} textarea{min-height:90px;resize:vertical}
+    .table-wrap{overflow:auto} table{width:100%;border-collapse:collapse;min-width:880px} th,td{border-bottom:1px solid #edf2f2;padding:11px 8px;text-align:left;vertical-align:top} th{font-size:12px;color:var(--muted);text-transform:uppercase}.mono{font-family:'Courier New',monospace!important;color:var(--muted);font-size:12px}.empty{border:1px dashed #cbd5d9;border-radius:14px;padding:28px;text-align:center;color:var(--muted)}.action-buttons{display:flex;gap:6px;flex-wrap:wrap}.type-chip{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--soft);border-radius:999px;padding:7px 10px;font-weight:800;margin:4px 6px 4px 0}.type-chip button{border:0;background:transparent;color:var(--danger);font-weight:900;padding:0 2px}
+    .export-list{display:flex;flex-direction:column;gap:12px}.export-btn{width:100%;border:1px solid var(--line);border-left:8px solid var(--accent);background:#fff;border-radius:14px;padding:17px;text-align:left;display:flex;gap:14px;align-items:center;font-weight:900;box-shadow:var(--shadow)}.export-btn small{display:block;color:var(--muted);font-weight:700;margin-top:3px}.export-btn.main{background:var(--primary);color:#fff}.export-btn.main small{color:rgba(255,255,255,.8)}.export-btn.backup{background:var(--success-bg);color:var(--success);border-left-color:var(--success)}
+    .member-layout{display:grid;grid-template-columns:1fr 430px;gap:16px}.member-card{min-height:250px;border-radius:20px;padding:20px;color:#fff;background:linear-gradient(135deg,var(--primary),var(--secondary));background-size:cover;background-position:center;overflow:hidden;position:relative}.member-card::before{content:"";position:absolute;inset:0;background:rgba(15,23,42,.18);pointer-events:none}.member-content{position:relative;z-index:1;background:rgba(15,23,42,.48);border:1px solid rgba(255,255,255,.18);border-radius:16px;padding:15px}.member-name{font-size:26px;font-weight:900;margin:14px 0}.member-details{display:grid;grid-template-columns:1fr 1fr;gap:10px;background:rgba(255,255,255,.11);border-radius:14px;padding:12px}
+
+    .books-layout{display:grid;grid-template-columns:1.4fr .8fr;gap:14px;align-items:start}
+    .barcode-preview-card{position:sticky;top:100px}
+    .barcode-preview-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .barcode-preview-title{font-weight:900;font-size:16px;margin:0 0 6px}
+    .barcode-preview-meta{color:var(--muted);font-size:13px;line-height:1.5;margin-bottom:10px}
+    @media(max-width:1080px){.books-layout{grid-template-columns:1fr}.barcode-preview-card{position:static}}
+
+    .barcode-label{border:1px solid var(--line);border-radius:14px;padding:14px;background:#fff}.barcode-box{margin-top:10px;border:1px dashed #ccd8db;border-radius:12px;padding:10px;text-align:center;background:#fff}.print-area{display:none}
+    .bar-row{display:grid;grid-template-columns:100px 1fr 40px;gap:10px;align-items:center;margin:9px 0}.bar-track{height:12px;background:var(--soft);border-radius:99px;overflow:hidden}.bar-fill{height:100%;background:var(--primary);border-radius:99px}.bar-fill.two{background:var(--accent)}
+    @media(max-width:1080px){.login-wrap,.layout,.member-layout,.grid2,.grid3,.grid4,.grid5{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.sidebar{position:static}.header-inner{align-items:flex-start;flex-direction:column}.bar-row{grid-template-columns:80px 1fr 34px}}
+    @media print{body *{visibility:hidden!important}.print-area,.print-area *{visibility:visible!important}.print-area{display:block!important;position:absolute;left:0;top:0;width:100%;padding:14mm;background:#fff}.print-page{page-break-after:always}.print-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.member-card{box-shadow:none!important}}
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <div id="printArea" class="print-area"></div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+  <script src="./firebase-config.js"></script>
+
+  <script>
+    const STORAGE_KEY = "perpus_ibu_anak_firestore_v14";
+    const SESSION_KEY = "perpus_ibu_anak_session_v14";
+    const DOC_COLLECTION = (window.FIREBASE_DOC_COLLECTION || "perpustakaan_apps");
+    const DOC_ID = (window.FIREBASE_DOC_ID || "ibu_anak_main");
+
+    const fontOptions = {
+      "Inter":"'Inter','Segoe UI',Arial,sans-serif","Poppins":"'Poppins','Segoe UI',Arial,sans-serif","Montserrat":"'Montserrat','Segoe UI',Arial,sans-serif","Roboto":"'Roboto',Arial,sans-serif","Nunito Sans":"'Nunito Sans',Arial,sans-serif","DM Sans":"'DM Sans',Arial,sans-serif","Manrope":"'Manrope',Arial,sans-serif","Outfit":"'Outfit',Arial,sans-serif","Plus Jakarta Sans":"'Plus Jakarta Sans',Arial,sans-serif","Quicksand":"'Quicksand',Arial,sans-serif","Trebuchet":"'Trebuchet MS',Arial,sans-serif","Arial":"Arial,Helvetica,sans-serif","Verdana":"Verdana,Geneva,sans-serif","Georgia":"Georgia,serif","Courier New":"'Courier New',monospace"
+    };
+    const fontSizes = { kecil:"12px", normal:"14px", besar:"16px", ekstra:"18px" };
+    const ageCategories = ["0-2 tahun","3-5 tahun","6-8 tahun","9-12 tahun","Remaja","Orang tua"];
+    const defaultBookTypes = ["Cerita Anak","Parenting"];
+    const statuses = ["Dipinjam","Dikembalikan"];
+
+    const initialData = {
+      settings:{libraryName:"Perpustakaan Ibu & Anak",tagline:"Ruang baca hangat untuk ibu dan buah hati",openHours:"14.00-20.00",appFont:"Inter",fontSize:"normal",primary:"#2f7d7e",secondary:"#f7b7c8",accent:"#f6c453",logoBg:"#f6c453",logoText:"#ffffff",logo:"",cardFront:"",cardBack:""},
+      bookTypes:["Cerita Anak","Parenting"],
+      admins:[{id:"A-001",name:"Admin Utama",username:"admin",password:"admin123",role:"Admin Utama",createdAt:"2026-05-07"}],
+      books:[
+        {id:"B-001",title:"Aku Bisa Berbagi",type:"Cerita Anak",ageCategory:"3-5 tahun",publisher:"Pelangi Kids",author:"Rina Lestari",stock:4,shelf:"A1",note:"Buku cerita karakter"},
+        {id:"B-002",title:"Dongeng Sebelum Tidur",type:"Cerita Anak",ageCategory:"6-8 tahun",publisher:"Ceria Media",author:"Nadia Putri",stock:3,shelf:"A2",note:"Kumpulan dongeng"},
+        {id:"B-003",title:"Mendidik Anak dengan Cinta",type:"Parenting",ageCategory:"Orang tua",publisher:"Rumah Ilmu",author:"Dr. Sari Handayani",stock:2,shelf:"P1",note:"Panduan pola asuh"}
+      ],
+      members:[{id:"M-001",name:"Aisyah Rahman",parentName:"Ibu Mila",phone:"081234567890",address:"Makassar",joinedAt:"2026-05-07"}],
+      visitors:[{id:"V-001",date:"2026-05-07",name:"Aisyah Rahman",purpose:"Membaca di tempat",timeIn:"14:30",timeOut:"16:00"}],
+      loans:[{id:"L-001",memberId:"M-001",memberName:"Aisyah Rahman",bookId:"B-001",bookTitle:"Aku Bisa Berbagi",borrowDate:"2026-05-07",dueDate:"2026-05-14",status:"Dipinjam"}]
+    };
+
+    let data = loadData();
+    let currentAdmin = loadSession();
+    let currentTab = "dashboard";
+    let selectedMemberId = null;
+    let editingBookId = null;
+    let db = null;
+    let syncStatus = "offline";
+    let syncMessage = "Mode offline";
+    let applyingRemote = false;
+    let saveTimer = null;
+    let firstSnapshot = true;
+
+    function clone(x){return JSON.parse(JSON.stringify(x))}
+    function today(){return new Date().toISOString().slice(0,10)}
+    function nextDate(n=7){const d=new Date();d.setDate(d.getDate()+n);return d.toISOString().slice(0,10)}
+    function makeId(prefix,list){return prefix+"-"+String((list||[]).length+1).padStart(3,"0")}
+    function esc(v){return String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
+    function sortText(a,b){return String(a||"").localeCompare(String(b||""),"id",{sensitivity:"base"})}
+    function uniqueClean(arr){return [...new Set((arr||[]).map(x=>String(x||"").trim()).filter(Boolean))]}
+    function getBookTypes(){return uniqueClean([...(data.bookTypes||[]),...(data.books||[]).map(b=>b.type),...defaultBookTypes]).sort(sortText)}
+    function bookTypeOptions(selected=""){const types=getBookTypes(); if(selected && !types.includes(selected)) types.unshift(selected); return types.map(x=>`<option value="${esc(x)}" ${selected===x?"selected":""}>${esc(x)}</option>`).join("")}
+
+    function normalizeData(input){
+      const base = clone(initialData);
+      if(!input || typeof input !== "object") return base;
+      const books = Array.isArray(input.books)?input.books.map(b=>({...b,type:b.type||"Lainnya"})):base.books;
+      return {
+        settings:{...base.settings,...(input.settings||{})},
+        bookTypes:uniqueClean([...(Array.isArray(input.bookTypes)?input.bookTypes:base.bookTypes),...books.map(b=>b.type),...defaultBookTypes]),
+        admins:Array.isArray(input.admins)&&input.admins.length?input.admins:base.admins,
+        books,
+        members:Array.isArray(input.members)?input.members:base.members,
+        visitors:Array.isArray(input.visitors)?input.visitors:base.visitors,
+        loans:Array.isArray(input.loans)?input.loans:base.loans
+      };
+    }
+    function loadData(){try{const raw=localStorage.getItem(STORAGE_KEY);return raw?normalizeData(JSON.parse(raw)):clone(initialData)}catch(e){return clone(initialData)}}
+    function saveLocal(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(data))}catch(e){}}
+    function saveData(){saveLocal(); if(db && !applyingRemote) scheduleFirestoreSave();}
+    function loadSession(){try{const raw=sessionStorage.getItem(SESSION_KEY);return raw?JSON.parse(raw):null}catch(e){return null}}
+    function saveSession(a){try{sessionStorage.setItem(SESSION_KEY,JSON.stringify(a))}catch(e){}}
+    function clearSession(){try{sessionStorage.removeItem(SESSION_KEY)}catch(e){}}
+
+    function isFirebaseConfigured(){
+      const c = window.FIREBASE_CONFIG;
+      return !!(c && c.apiKey && c.projectId && !String(c.apiKey).includes("ISI_") && !String(c.projectId).includes("ISI_"));
+    }
+    function updateSync(status,msg){syncStatus=status;syncMessage=msg;if(document.getElementById("syncChip"))document.getElementById("syncChip").outerHTML=syncChipHTML();}
+    function syncChipHTML(){const cls=syncStatus==="online"?"online":syncStatus==="error"?"error":"offline";const icon=syncStatus==="online"?"☁️":syncStatus==="error"?"⚠️":"💾";return `<div id="syncChip" class="chip ${cls}">${icon} ${esc(syncMessage)}</div>`}
+    function initFirebase(){
+      if(!isFirebaseConfigured()){updateSync("offline","Offline / config belum diisi");return;}
+      try{
+        if(!firebase.apps.length) firebase.initializeApp(window.FIREBASE_CONFIG);
+        db = firebase.firestore();
+        updateSync("offline","Menghubungkan Firestore...");
+        db.collection(DOC_COLLECTION).doc(DOC_ID).onSnapshot(snap=>{
+          if(snap.exists){
+            const remote = snap.data().appData || snap.data();
+            applyingRemote = true;
+            data = normalizeData(remote);
+            saveLocal();
+            applyingRemote = false;
+            updateSync("online","Online Firestore");
+            if(currentAdmin && !data.admins.some(a=>a.id===currentAdmin.id)){currentAdmin=null;clearSession();}
+            render();
+          }else{
+            updateSync("online","Online Firestore");
+            scheduleFirestoreSave(true);
+          }
+          firstSnapshot = false;
+        },err=>{console.error(err);updateSync("error","Firestore error");});
+      }catch(e){console.error(e);updateSync("error","Firebase config error");}
+    }
+    function scheduleFirestoreSave(immediate=false){
+      if(!db) return;
+      clearTimeout(saveTimer);
+      saveTimer=setTimeout(()=>{
+        db.collection(DOC_COLLECTION).doc(DOC_ID).set({appData:data,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true})
+          .then(()=>updateSync("online","Online Firestore"))
+          .catch(err=>{console.error(err);updateSync("error","Gagal sync Firestore")});
+      }, immediate?0:450);
+    }
+
+    function applyTheme(){
+      const s=data.settings; const root=document.documentElement;
+      root.style.setProperty("--primary",s.primary||"#2f7d7e");
+      root.style.setProperty("--secondary",s.secondary||"#f7b7c8");
+      root.style.setProperty("--accent",s.accent||"#f6c453");
+      root.style.setProperty("--soft",hexToRgba(s.primary||"#2f7d7e",.09));
+      root.style.setProperty("--font",fontOptions[s.appFont]||fontOptions.Inter);
+      root.style.setProperty("--fs",fontSizes[s.fontSize]||"14px");
+      root.style.setProperty("--logo-bg",s.logoBg||"#f6c453");
+      root.style.setProperty("--logo-text",s.logoText||"#ffffff");
+      document.title=s.libraryName||"Perpustakaan";
+    }
+    function hexToRgba(hex,a){const h=hex.replace("#","");const n=parseInt(h.length===3?h.split("").map(c=>c+c).join(""):h,16);return`rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`}
+    function logoHTML(){return data.settings.logo?`<div class="logo"><img src="${data.settings.logo}"></div>`:`<div class="logo">📚</div>`}
+    function section(icon,title,subtitle){return `<div class="section"><div class="icon">${icon}</div><div><h2>${title}</h2><p>${subtitle}</p></div></div>`}
+
+    function render(){applyTheme(); currentAdmin?renderApp():renderLogin();}
+    function renderLogin(){
+      const s=data.settings;
+      document.getElementById("root").innerHTML=`<div class="login"><div class="login-wrap"><div class="login-hero">${logoHTML()}<h1>${esc(s.libraryName)}</h1><p>${esc(s.tagline)}. Aplikasi sudah siap Firebase Hosting dan Firestore untuk sinkron data antar perangkat.</p><p>${syncChipHTML()}</p></div><div class="login-card"><h2>Login Admin</h2><form onsubmit="login(event)"><label>Username</label><input id="loginUser" value="admin"><label>Password</label><input id="loginPass" type="password" value="admin123"><div id="loginError" class="hidden" style="color:var(--danger);font-weight:800;margin:10px 0"></div><button class="btn primary" style="width:100%">Masuk</button></form><p style="color:var(--muted)">Login awal: <b>admin</b> / <b>admin123</b>. Segera ganti di menu Kelola Admin.</p></div></div></div>`;
+    }
+    function login(e){e.preventDefault();const u=document.getElementById("loginUser").value.trim().toLowerCase();const p=document.getElementById("loginPass").value;const a=data.admins.find(x=>x.username.toLowerCase()===u&&x.password===p);if(!a){document.getElementById("loginError").textContent="Username atau password salah.";document.getElementById("loginError").classList.remove("hidden");return;}currentAdmin={id:a.id,name:a.name,username:a.username,role:a.role};saveSession(currentAdmin);renderApp();}
+    function logout(){currentAdmin=null;clearSession();currentTab="dashboard";renderLogin();}
+    function renderApp(){
+      applyTheme();
+      const s=data.settings;
+      const nav=[["dashboard","📋","Ringkasan"],["exports","📤","EXPORT DATA"],["books","📚","Inventaris Buku"],["members","🪪","Anggota & Kartu"],["visitors","🗓️","Pengunjung"],["loans","🤝","Peminjaman"],["admins","🛡️","Kelola Admin"],["settings","⚙️","Setting"]];
+      document.getElementById("root").innerHTML=`<header class="app-header"><div class="header-inner"><div class="brand">${logoHTML()}<div><h1>${esc(s.libraryName)}</h1><p>${esc(s.tagline)} • ${esc(s.openHours)}</p></div></div><div class="top-actions">${syncChipHTML()}<div class="chip">${esc(currentAdmin.name)} • ${esc(currentAdmin.role)}</div><button class="btn primary" onclick="logout()">Logout</button></div></div></header><main class="layout"><aside class="sidebar">${nav.map(n=>`<button class="nav ${currentTab===n[0]?"active":""} ${n[0]==="exports"?"export":""}" onclick="setTab('${n[0]}')"><span>${n[1]}</span>${n[2]}</button>`).join("")}</aside><section id="content" class="main"></section></main>`;
+      renderContent();
+    }
+    function setTab(t){currentTab=t;renderApp();}
+    function renderContent(){const c=document.getElementById("content"); if(!c)return; c.innerHTML = ({dashboard:dashboardHTML,exports:exportsHTML,books:booksHTML,members:membersHTML,visitors:visitorsHTML,loans:loansHTML,admins:adminsHTML,settings:settingsHTML}[currentTab]||dashboardHTML)();}
+
+    function dashboardHTML(){const active=data.loans.filter(l=>l.status==="Dipinjam").length;const ret=data.loans.filter(l=>l.status==="Dikembalikan").length;return `<div class="stats"><div class="card stat"><div class="label">Total Buku</div><div class="num">${data.books.length}</div></div><div class="card stat"><div class="label">Anggota</div><div class="num">${data.members.length}</div></div><div class="card stat"><div class="label">Pengunjung</div><div class="num">${data.visitors.length}</div></div><div class="card stat"><div class="label">Dipinjam</div><div class="num">${active}</div></div><div class="card stat"><div class="label">Kembali</div><div class="num">${ret}</div></div></div><div class="card">${section("📈","Grafik Aktivitas","Pengunjung dan buku keluar/masuk tersinkron dari Firestore.")}<div class="grid2">${visitorChart()}${movementChart()}</div></div><div class="card">${section("☁️","Status Sinkronisasi","Data otomatis sinkron antar perangkat jika Firebase sudah dikonfigurasi.")}<p>${syncChipHTML()}</p><p style="color:var(--muted)">Firestore path: <b>${DOC_COLLECTION}/${DOC_ID}</b></p></div>`}
+    function countByDate(arr,key){const m={};arr.forEach(x=>{const d=x[key]||"-";m[d]=(m[d]||0)+1});return Object.entries(m).sort((a,b)=>sortText(a[0],b[0])).slice(-7)}
+    function visitorChart(){const rows=countByDate(data.visitors,"date");if(!rows.length)return`<div class="empty">Belum ada data pengunjung.</div>`;const max=Math.max(...rows.map(r=>r[1]),1);return`<div>${rows.map(r=>`<div class="bar-row"><div>${esc(r[0])}</div><div class="bar-track"><div class="bar-fill" style="width:${Math.max(4,r[1]/max*100)}%"></div></div><b>${r[1]}</b></div>`).join("")}</div>`}
+    function movementChart(){const dates=[...new Set(data.loans.map(l=>l.borrowDate))].sort(sortText).slice(-7);if(!dates.length)return`<div class="empty">Belum ada data peminjaman.</div>`;const rows=dates.map(d=>({d,k:data.loans.filter(l=>l.borrowDate===d).length,m:data.loans.filter(l=>l.dueDate===d&&l.status==="Dikembalikan").length}));const max=Math.max(...rows.flatMap(r=>[r.k,r.m]),1);return`<div>${rows.map(r=>`<div class="bar-row"><div>${esc(r.d)}</div><div class="bar-track"><div class="bar-fill" style="width:${Math.max(4,r.k/max*100)}%"></div></div><b>${r.k}</b></div><div class="bar-row"><div>masuk</div><div class="bar-track"><div class="bar-fill two" style="width:${Math.max(4,r.m/max*100)}%"></div></div><b>${r.m}</b></div>`).join("")}</div>`}
+
+    function booksHTML(){
+      const editBook = data.books.find(b=>b.id===editingBookId) || null;
+      const firstBook = editBook || data.books[0] || null;
+      return `<div class="card">${section(editBook?"✏️":"➕",editBook?"Revisi Data Buku":"Tambah Buku",editBook?"Perbaiki inputan buku yang salah, lalu klik Update Buku.":"Input buku dan pilih jenis buku sesuai kebutuhan.")}
+        <form class="grid4" onsubmit="saveBook(event)">
+          <div><label>Judul</label><input id="bTitle" required value="${esc(editBook?.title||"")}"></div>
+          <div><label>Jenis Buku</label><select id="bType" onchange="document.getElementById('bAge').value=this.value==='Parenting'?'Orang tua':'3-5 tahun'">${bookTypeOptions(editBook?.type||"")}</select></div>
+          <div><label>Kategori Umur</label><select id="bAge">${ageCategories.map(x=>`<option ${editBook?.ageCategory===x?"selected":""}>${x}</option>`).join("")}</select></div>
+          <div><label>Penerbit</label><input id="bPublisher" value="${esc(editBook?.publisher||"")}"></div>
+          <div><label>Pengarang</label><input id="bAuthor" value="${esc(editBook?.author||"")}"></div>
+          <div><label>Stok</label><input id="bStock" type="number" min="1" value="${esc(editBook?.stock||1)}"></div>
+          <div><label>Rak</label><input id="bShelf" value="${esc(editBook?.shelf||"")}"></div>
+          <div><label>Catatan</label><input id="bNote" value="${esc(editBook?.note||"")}"></div>
+          <div><button class="btn primary">${editBook?"Update Buku":"Simpan Buku"}</button>${editBook?` <button type="button" class="btn secondary" onclick="cancelEditBook()">Batal Edit</button>`:""}</div>
+        </form>
+      </div>
+      <div class="card">${section("🏷️","Kelola Jenis Buku","Tambahkan jenis buku baru agar muncul pada pilihan input buku.")}
+        <form class="grid2" onsubmit="addBookType(event)">
+          <div><label>Nama Jenis Buku Baru</label><input id="btName" placeholder="Contoh: Ensiklopedia Anak, Komik Edukasi, Kesehatan Ibu"></div>
+          <div><button class="btn primary">Tambah Jenis Buku</button></div>
+        </form>
+        <div style="margin-top:10px">${getBookTypes().map(t=>`<span class="type-chip">${esc(t)}${defaultBookTypes.includes(t)?"":`<button title="Hapus jenis buku" onclick="deleteBookType('${esc(t)}')">×</button>`}</span>`).join("")}</div>
+      </div>
+      <div class="books-layout">
+        <div class="card">${section("📚","Inventaris Buku","Kolom Jenis Buku sudah tersedia. Klik Edit untuk merevisi inputan yang salah.")}<div class="table-wrap">${bookTable()}</div></div>
+        <div class="card barcode-preview-card">${section("🏷️","Preview Barcode Buku","Barcode akan tampil di sini.")}<div id="barcodePreview">${barcodePreviewHTML(firstBook)}</div></div>
+      </div>`
+    }
+        function bookTable(){const rows=[...data.books].sort((a,b)=>sortText(a.title,b.title));return`<table><thead><tr><th>Kode</th><th>Judul</th><th>Jenis Buku</th><th>Umur</th><th>Penerbit</th><th>Pengarang</th><th>Stok</th><th>Rak</th><th>Aksi</th></tr></thead><tbody>${rows.map(b=>`<tr><td class="mono">${esc(b.id)}</td><td><b>${esc(b.title)}</b><br><small>${esc(b.note||"")}</small></td><td>${esc(b.type||"-")}</td><td>${esc(b.ageCategory)}</td><td>${esc(b.publisher)}</td><td>${esc(b.author)}</td><td>${esc(b.stock)}</td><td>${esc(b.shelf)}</td><td><div class="action-buttons"><button class="btn success" onclick="editBook('${b.id}')">Edit</button><button class="btn secondary" onclick="previewBarcode('${b.id}')">Preview Barcode</button><button class="btn secondary" onclick="printBarcode('${b.id}')">Cetak</button><button class="btn danger" onclick="deleteBook('${b.id}')">Hapus</button></div></td></tr>`).join("")}</tbody></table>`}
+    function barcodePreviewHTML(book){
+      if(!book) return `<div class="empty">Belum ada buku untuk preview barcode.</div>`;
+      return `<div><p class="barcode-preview-title">${esc(book.title)}</p><div class="barcode-preview-meta">Kode: <b>${esc(book.id)}</b><br>Rak: <b>${esc(book.shelf||"-")}</b><br>Jenis: ${esc(book.type)} • ${esc(book.ageCategory)}</div>${barcodeHTML(book)}<div class="barcode-preview-actions"><button class="btn primary" onclick="printBarcode('${book.id}')">Cetak Barcode Ini</button><button class="btn secondary" onclick="printAllBarcodes()">Cetak Semua Barcode</button></div></div>`
+    }
+    function previewBarcode(id){const b=data.books.find(x=>x.id===id);const target=document.getElementById("barcodePreview");if(target)target.innerHTML=barcodePreviewHTML(b)}
+    function saveBook(e){
+      e.preventDefault();
+      const payload={title:val("bTitle"),type:val("bType")||"Lainnya",ageCategory:val("bAge"),publisher:val("bPublisher"),author:val("bAuthor"),stock:Number(val("bStock"))||1,shelf:val("bShelf"),note:val("bNote")};
+      if(!data.bookTypes) data.bookTypes=[];
+      data.bookTypes=uniqueClean([...data.bookTypes,payload.type]);
+      if(editingBookId){
+        data.books=data.books.map(b=>b.id===editingBookId?{...b,...payload}:b);
+        editingBookId=null;
+      }else{
+        data.books.push({id:makeId("B",data.books),...payload});
+      }
+      saveData();
+      renderApp();
+    }
+    function editBook(id){editingBookId=id;currentTab="books";renderApp();setTimeout(()=>{const el=document.getElementById("bTitle");if(el){el.focus();el.scrollIntoView({behavior:"smooth",block:"center"})}},50)}
+    function cancelEditBook(){editingBookId=null;renderApp()}
+    function addBookType(e){e.preventDefault();const name=val("btName").trim();if(!name)return alert("Nama jenis buku belum diisi.");data.bookTypes=uniqueClean([...(data.bookTypes||[]),name]);saveData();renderApp()}
+    function deleteBookType(type){if(data.books.some(b=>b.type===type))return alert("Jenis buku ini sedang dipakai pada data buku, jadi belum bisa dihapus.");if(confirm("Hapus jenis buku ini?")){data.bookTypes=(data.bookTypes||[]).filter(x=>x!==type);saveData();renderApp()}}
+    function deleteBook(id){if(confirm("Hapus buku?")){data.books=data.books.filter(x=>x.id!==id);if(editingBookId===id)editingBookId=null;saveData();renderApp()}}
+
+    function membersHTML(){const m=getMember();return `<div class="member-layout"><div class="card">${section("➕","Tambah Anggota","Data member perpustakaan.")}<form class="grid2" onsubmit="addMember(event)"><div><label>Nama</label><input id="mName" required></div><div><label>Orang Tua</label><input id="mParent"></div><div><label>HP</label><input id="mPhone"></div><div><label>Alamat</label><input id="mAddress"></div><div><label>Tanggal</label><input id="mDate" type="date" value="${today()}"></div><div><button class="btn primary">Simpan Anggota</button></div></form></div><div>${memberCard(m)}<p><button class="btn secondary" onclick="printMember('${m?m.id:""}')">Cetak Kartu</button></p></div></div><div class="card">${section("👥","Daftar Anggota","Klik lihat untuk kartu.")}<div class="grid3">${data.members.map(x=>`<div class="card"><b>${esc(x.name)}</b><p>${esc(x.id)} • ${esc(x.parentName||"-")}</p><p>${esc(x.phone||"-")}</p><button class="btn secondary" onclick="selectedMemberId='${x.id}';renderApp()">Lihat</button> <button class="btn danger" onclick="deleteMember('${x.id}')">Hapus</button></div>`).join("")}</div></div>`}
+    function getMember(){return data.members.find(x=>x.id===selectedMemberId)||data.members[0]||null}
+    function memberCard(m){const s=data.settings;const bg=s.cardFront?`background-image:url('${s.cardFront}')`:``;return`<div class="member-card" style="${bg}"><div class="member-content"><div>${logoHTML()}</div><div style="opacity:.8;text-transform:uppercase;letter-spacing:.12em;font-size:12px">Kartu Anggota</div><div class="member-name">${esc(m?m.name:"Pilih anggota")}</div><div class="member-details"><div>ID<br><b>${esc(m?m.id:"M-000")}</b></div><div>Daftar<br><b>${esc(m?m.joinedAt:"-")}</b></div><div>Orang Tua<br><b>${esc(m?m.parentName:"-")}</b></div><div>Jam<br><b>${esc(s.openHours)}</b></div></div></div></div>`}
+    function addMember(e){e.preventDefault();const m={id:makeId("M",data.members),name:val("mName"),parentName:val("mParent"),phone:val("mPhone"),address:val("mAddress"),joinedAt:val("mDate")||today()};data.members.push(m);selectedMemberId=m.id;saveData();renderApp()}
+    function deleteMember(id){if(confirm("Hapus anggota?")){data.members=data.members.filter(x=>x.id!==id);saveData();renderApp()}}
+
+    function visitorsHTML(){return `<div class="card">${section("➕","Tambah Pengunjung","Catat kunjungan perpustakaan.")}<form class="grid5" onsubmit="addVisitor(event)"><div><label>Tanggal</label><input id="vDate" type="date" value="${today()}"></div><div><label>Nama</label><input id="vName" required></div><div><label>Keperluan</label><input id="vPurpose" value="Membaca di tempat"></div><div><label>Masuk</label><input id="vIn" type="time" value="14:00"></div><div><label>Keluar</label><input id="vOut" type="time"></div><div><button class="btn primary">Simpan Pengunjung</button></div></form></div><div class="card">${section("🗓️","Daftar Pengunjung","Data tersinkron.")}<div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Nama</th><th>Keperluan</th><th>Masuk</th><th>Keluar</th><th>Aksi</th></tr></thead><tbody>${data.visitors.map(v=>`<tr><td>${esc(v.date)}</td><td><b>${esc(v.name)}</b></td><td>${esc(v.purpose)}</td><td>${esc(v.timeIn)}</td><td>${esc(v.timeOut||"-")}</td><td><button class="btn danger" onclick="deleteVisitor('${v.id}')">Hapus</button></td></tr>`).join("")}</tbody></table></div></div>`}
+    function addVisitor(e){e.preventDefault();data.visitors.push({id:makeId("V",data.visitors),date:val("vDate")||today(),name:val("vName"),purpose:val("vPurpose"),timeIn:val("vIn"),timeOut:val("vOut")});saveData();renderApp()}
+    function deleteVisitor(id){if(confirm("Hapus pengunjung?")){data.visitors=data.visitors.filter(x=>x.id!==id);saveData();renderApp()}}
+
+    function loansHTML(){return `<div class="card">${section("➕","Tambah Peminjaman","Pilih anggota dan buku.")}<form class="grid5" onsubmit="addLoan(event)"><div><label>Anggota</label><select id="lMember">${data.members.map(m=>`<option value="${m.id}">${esc(m.name)}</option>`).join("")}</select></div><div><label>Buku</label><select id="lBook">${data.books.map(b=>`<option value="${b.id}">${esc(b.title)}</option>`).join("")}</select></div><div><label>Pinjam</label><input id="lBorrow" type="date" value="${today()}"></div><div><label>Batas</label><input id="lDue" type="date" value="${nextDate()}"></div><div><label>Status</label><select id="lStatus">${statuses.map(s=>`<option>${s}</option>`).join("")}</select></div><div><button class="btn primary">Simpan Peminjaman</button></div></form></div><div class="card">${section("🤝","Daftar Peminjaman","Data tersinkron.")}<div class="table-wrap">${loanTable(data.loans,true)}</div></div>`}
+    function loanTable(rows,act){return`<table><thead><tr><th>Kode</th><th>Anggota</th><th>Buku</th><th>Pinjam</th><th>Batas</th><th>Status</th>${act?"<th>Aksi</th>":""}</tr></thead><tbody>${rows.map(l=>`<tr><td class="mono">${esc(l.id)}</td><td>${esc(l.memberName)}</td><td>${esc(l.bookTitle)}</td><td>${esc(l.borrowDate)}</td><td>${esc(l.dueDate)}</td><td>${act?`<select onchange="setLoanStatus('${l.id}',this.value)">${statuses.map(s=>`<option ${l.status===s?"selected":""}>${s}</option>`).join("")}</select>`:esc(l.status)}</td>${act?`<td><button class="btn danger" onclick="deleteLoan('${l.id}')">Hapus</button></td>`:""}</tr>`).join("")}</tbody></table>`}
+    function addLoan(e){e.preventDefault();const m=data.members.find(x=>x.id===val("lMember"));const b=data.books.find(x=>x.id===val("lBook"));if(!m||!b)return;data.loans.push({id:makeId("L",data.loans),memberId:m.id,memberName:m.name,bookId:b.id,bookTitle:b.title,borrowDate:val("lBorrow")||today(),dueDate:val("lDue")||nextDate(),status:val("lStatus")});saveData();renderApp()}
+    function setLoanStatus(id,status){data.loans=data.loans.map(l=>l.id===id?{...l,status}:l);saveData();renderApp()}
+    function deleteLoan(id){if(confirm("Hapus peminjaman?")){data.loans=data.loans.filter(x=>x.id!==id);saveData();renderApp()}}
+
+    function adminsHTML(msg=""){const isMain=currentAdmin.role==="Admin Utama";return `<div class="card">${section("🔐","Profil Admin","Ganti username/password agar login awal tidak dipakai orang lain.")}<form class="grid2" onsubmit="updateMyAdmin(event)"><div><label>Nama</label><input id="aName" value="${esc(currentAdmin.name)}"></div><div><label>Username</label><input id="aUser" value="${esc(currentAdmin.username)}"></div><div><label>Password baru</label><input id="aPass" type="password"></div><div><label>Ulangi password</label><input id="aPass2" type="password"></div><div><button class="btn primary">Simpan Akun</button></div></form>${msg?`<p style="color:var(--success);font-weight:800">${esc(msg)}</p>`:""}</div><div class="card">${section("🛡️","Kelola Admin",isMain?"Admin utama bisa menambah/menghapus staf.":"Hanya Admin Utama bisa menambah admin.")}${isMain?`<form class="grid4" onsubmit="addAdmin(event)"><div><label>Nama</label><input id="newAName" required></div><div><label>Username</label><input id="newAUser" required></div><div><label>Password</label><input id="newAPass" required></div><div><label>Role</label><select id="newARole"><option>Admin Staf</option><option>Admin Utama</option></select></div><div><button class="btn primary">Tambah Admin</button></div></form>`:""}<div class="grid3" style="margin-top:14px">${data.admins.map(a=>`<div class="card"><b>${esc(a.name)}</b><p>${esc(a.role)} • ${esc(a.username)}</p>${isMain&&a.role!=="Admin Utama"?`<button class="btn danger" onclick="deleteAdmin('${a.id}')">Hapus</button>`:""}</div>`).join("")}</div></div>`}
+    function updateMyAdmin(e){e.preventDefault();const name=val("aName"),user=val("aUser").toLowerCase(),p=val("aPass"),p2=val("aPass2");if(p||p2){if(p!==p2)return alert("Password belum sama.");if(p.length<4)return alert("Password minimal 4 karakter.");}if(data.admins.some(a=>a.id!==currentAdmin.id&&a.username.toLowerCase()===user))return alert("Username sudah dipakai.");data.admins=data.admins.map(a=>a.id===currentAdmin.id?{...a,name,username:user,password:p||a.password}:a);currentAdmin={...currentAdmin,name,username:user};saveSession(currentAdmin);saveData();document.getElementById("content").innerHTML=adminsHTML("Akun admin berhasil diperbarui.")}
+    function addAdmin(e){e.preventDefault();const user=val("newAUser").toLowerCase();if(data.admins.some(a=>a.username.toLowerCase()===user))return alert("Username sudah dipakai.");data.admins.push({id:makeId("A",data.admins),name:val("newAName"),username:user,password:val("newAPass"),role:val("newARole"),createdAt:today()});saveData();renderApp()}
+    function deleteAdmin(id){if(confirm("Hapus admin?")){data.admins=data.admins.filter(a=>a.id!==id);saveData();renderApp()}}
+
+    function settingsHTML(){const s=data.settings;return `<div class="card">${section("⚙️","Setting Tampilan","Warna aplikasi dan warna background logo dipisahkan.")}<form class="grid2" onsubmit="saveSettings(event)">
+      <div><label>Nama Perpustakaan</label><input id="sName" value="${esc(s.libraryName)}"></div>
+      <div><label>Tagline</label><input id="sTag" value="${esc(s.tagline)}"></div>
+      <div><label>Jam Buka</label><input id="sHours" value="${esc(s.openHours)}"></div>
+      <div><label>Font</label><select id="sFont" onchange="liveSettings()">${Object.keys(fontOptions).map(f=>`<option ${s.appFont===f?"selected":""}>${esc(f)}</option>`).join("")}</select></div>
+      <div><label>Ukuran Font</label><select id="sSize" onchange="liveSettings()">${Object.keys(fontSizes).map(k=>`<option value="${k}" ${s.fontSize===k?"selected":""}>${k}</option>`).join("")}</select></div>
+      <div><label>Logo Gambar</label><input id="sLogo" type="file" accept="image/*" onchange="uploadImage(event,'logo')"></div>
+
+      <div class="card" style="box-shadow:none;margin:0;"><h3>Warna Tampilan Aplikasi</h3><p style="color:var(--muted)">Untuk tombol, sidebar aktif, grafik, dan elemen utama aplikasi.</p><div class="grid3">
+        <div><label>Warna Utama Aplikasi</label><input type="color" id="sPrimary" value="${esc(s.primary)}" oninput="liveSettings()"></div>
+        <div><label>Warna Kedua Aplikasi</label><input type="color" id="sSecondary" value="${esc(s.secondary)}" oninput="liveSettings()"></div>
+        <div><label>Warna Aksen Aplikasi</label><input type="color" id="sAccent" value="${esc(s.accent)}" oninput="liveSettings()"></div>
+      </div></div>
+
+      <div class="card" style="box-shadow:none;margin:0;"><h3>Warna Background Logo</h3><p style="color:var(--muted)">Khusus untuk kotak/badge logo jika belum memakai gambar logo, atau sebagai latar logo.</p><div class="grid2">
+        <div><label>Background Logo</label><input type="color" id="sLogoBg" value="${esc(s.logoBg||"#f6c453")}" oninput="liveSettings()"></div>
+        <div><label>Warna Icon/Teks Logo</label><input type="color" id="sLogoText" value="${esc(s.logoText||"#ffffff")}" oninput="liveSettings()"></div>
+      </div><div style="margin-top:12px">${logoHTML()}</div></div>
+
+      <div><label>Desain Depan Kartu</label><input type="file" accept="image/*" onchange="uploadImage(event,'cardFront')"></div>
+      <div><label>Desain Belakang Kartu</label><input type="file" accept="image/*" onchange="uploadImage(event,'cardBack')"></div>
+      <div><button class="btn primary">Simpan Setting</button></div>
+    </form><p style="color:var(--muted)">Catatan: gambar logo/kartu tersimpan sebagai data base64 di Firestore. Untuk produksi besar, sebaiknya pakai Firebase Storage.</p></div>`}
+    function liveSettings(){const s=data.settings;s.appFont=val("sFont")||"Inter";s.fontSize=val("sSize")||"normal";s.primary=val("sPrimary")||s.primary;s.secondary=val("sSecondary")||s.secondary;s.accent=val("sAccent")||s.accent;s.logoBg=val("sLogoBg")||s.logoBg||"#f6c453";s.logoText=val("sLogoText")||s.logoText||"#ffffff";applyTheme()}
+    function saveSettings(e){e.preventDefault();const s=data.settings;s.libraryName=val("sName")||s.libraryName;s.tagline=val("sTag")||s.tagline;s.openHours=val("sHours")||s.openHours;liveSettings();saveData();renderApp()}
+    function uploadImage(e,key){const file=e.target.files&&e.target.files[0];if(!file)return;const r=new FileReader();r.onload=ev=>{data.settings[key]=ev.target.result;saveData();renderApp()};r.readAsDataURL(file)}
+
+    function exportsHTML(){return `<div class="card" style="border:2px solid var(--primary)">${section("📤","EXPORT DATA","Semua pilihan export ada di sini.")}<div class="export-list">${expBtn("📊","Download Excel .xls Semua Data","exportAllXLS()","Semua tabel dan laporan dalam satu file Excel.","main")}${expBtn("📚","Excel Jumlah Buku","exportSingleXLS('book_summary')","Total judul, stok, dipinjam, dan kembali.")}${expBtn("🧮","Excel Buku per Kategori","exportSingleXLS('book_by_category')","Rekap jenis dan kategori umur.")}${expBtn("🔁","Excel Buku Keluar/Masuk","exportSingleXLS('book_movement')","Pergerakan buku.")}${expBtn("🗓️","Excel Data Pengunjung","exportSingleXLS('visitors')","Daftar pengunjung.")}${expBtn("👥","Excel Data Anggota","exportSingleXLS('members')","Daftar anggota.")}${expBtn("📖","Excel Inventaris Buku","exportSingleXLS('books')","Daftar buku.")}${expBtn("🤝","Excel Peminjaman","exportSingleXLS('loans')","Data peminjaman.")}</div></div><div class="card">${section("🧾","CSV & Backup","Export CSV atau backup JSON.")}<div class="export-list">${expBtn("🧾","CSV Buku","exportCSV('books')","Inventaris buku.")}${expBtn("👥","CSV Anggota","exportCSV('members')","Data anggota.")}${expBtn("🗓️","CSV Pengunjung","exportCSV('visitors')","Data pengunjung.")}${expBtn("🤝","CSV Peminjaman","exportCSV('loans')","Data peminjaman.")}${expBtn("📚","CSV Jumlah Buku","exportCSV('book_summary')","Ringkasan buku.")}${expBtn("🔁","CSV Buku Keluar/Masuk","exportCSV('book_movement')","Pergerakan buku.")}${expBtn("🧰","Backup JSON","exportJSON()","Backup lengkap semua data.","backup")}</div><p><label>Import Backup JSON</label><input type="file" accept=".json,application/json" onchange="importJSON(event)"></p></div>`}
+    function expBtn(icon,title,fn,sub,cls=""){return`<button class="export-btn ${cls}" onclick="${fn}">${icon}<div><b>${title}</b><small>${sub}</small></div></button>`}
+    function val(id){const el=document.getElementById(id);return el?el.value:""}
+
+    function getExportRows(type){if(type==="books")return data.books.map(b=>({kode:b.id,judul:b.title,jenis:b.type,kategori_umur:b.ageCategory,penerbit:b.publisher,pengarang:b.author,stok:b.stock,rak:b.shelf,catatan:b.note}));if(type==="members")return data.members.map(m=>({id_member:m.id,nama:m.name,nama_orang_tua:m.parentName,no_hp:m.phone,alamat:m.address,tanggal_daftar:m.joinedAt}));if(type==="visitors")return data.visitors.map(v=>({id:v.id,tanggal:v.date,nama:v.name,keperluan:v.purpose,jam_masuk:v.timeIn,jam_keluar:v.timeOut}));if(type==="loans")return data.loans.map(l=>({id:l.id,id_member:l.memberId,nama_member:l.memberName,kode_buku:l.bookId,judul_buku:l.bookTitle,tanggal_pinjam:l.borrowDate,batas_kembali:l.dueDate,status:l.status}));if(type==="book_summary"){return[{keterangan:"Total Judul Buku",jumlah:data.books.length},{keterangan:"Total Stok Buku",jumlah:data.books.reduce((s,b)=>s+(Number(b.stock)||0),0)},{keterangan:"Buku Sedang Dipinjam",jumlah:data.loans.filter(l=>l.status==="Dipinjam").length},{keterangan:"Buku Sudah Kembali",jumlah:data.loans.filter(l=>l.status==="Dikembalikan").length},{keterangan:"Anggota",jumlah:data.members.length},{keterangan:"Pengunjung",jumlah:data.visitors.length}]}if(type==="book_by_category"){const m={};data.books.forEach(b=>{const k=(b.type||"-")+" | "+(b.ageCategory||"-");m[k]=m[k]||{jenis:b.type,kategori_umur:b.ageCategory,jumlah_judul:0,total_stok:0};m[k].jumlah_judul++;m[k].total_stok+=Number(b.stock)||0});return Object.values(m)}if(type==="book_movement")return data.loans.map(l=>({id:l.id,tanggal:l.borrowDate,jenis_pergerakan:l.status==="Dikembalikan"?"Keluar dan sudah kembali":"Keluar/dipinjam",kode_buku:l.bookId,judul_buku:l.bookTitle,nama_member:l.memberName,batas_kembali:l.dueDate,status:l.status}));return[]}
+    function csvEscape(v){return `"${String(v??"").replaceAll('"','""')}"`}
+    function rowsToCSV(rows){if(!rows.length)return"";const h=Object.keys(rows[0]);return "\ufeff"+[h.map(csvEscape).join(","),...rows.map(r=>h.map(k=>csvEscape(r[k])).join(","))].join("\n")}
+    function downloadFile(name,content,type){const blob=new Blob([content],{type});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url)}
+    function label(type){return({books:"Inventaris Buku",members:"Data Anggota",visitors:"Data Pengunjung",loans:"Data Peminjaman",book_summary:"Laporan Jumlah Buku",book_by_category:"Buku per Kategori",book_movement:"Buku Keluar Masuk"}[type]||type)}
+    function exportCSV(type){const rows=getExportRows(type);if(!rows.length)return alert("Tidak ada data.");downloadFile(label(type).replaceAll(" ","_")+"_"+today()+".csv",rowsToCSV(rows),"text/csv;charset=utf-8")}
+    function tableHTML(title,rows){if(!rows.length)return`<h2>${esc(title)}</h2><p>Tidak ada data.</p>`;const h=Object.keys(rows[0]);return`<h2>${esc(title)}</h2><table border="1"><thead><tr>${h.map(x=>`<th>${esc(x)}</th>`).join("")}</tr></thead><tbody>${rows.map(r=>`<tr>${h.map(k=>`<td>${esc(r[k])}</td>`).join("")}</tr>`).join("")}</tbody></table><br>`}
+    function exportSingleXLS(type){const rows=getExportRows(type);const html=`<html><head><meta charset="UTF-8"></head><body><h1>${esc(label(type))}</h1>${tableHTML(label(type),rows)}</body></html>`;downloadFile(label(type).replaceAll(" ","_")+"_"+today()+".xls",html,"application/vnd.ms-excel;charset=utf-8")}
+    function exportAllXLS(){const html=`<html><head><meta charset="UTF-8"></head><body><h1>${esc(data.settings.libraryName)}</h1>${["book_summary","book_by_category","book_movement","books","members","visitors","loans"].map(t=>tableHTML(label(t),getExportRows(t))).join("")}</body></html>`;downloadFile("data_perpustakaan_"+today()+".xls",html,"application/vnd.ms-excel;charset=utf-8")}
+    function exportJSON(){downloadFile("backup_perpustakaan_"+today()+".json",JSON.stringify(data,null,2),"application/json;charset=utf-8")}
+    function importJSON(e){const f=e.target.files&&e.target.files[0];if(!f)return;if(!confirm("Import akan mengganti data saat ini. Lanjutkan?"))return;const r=new FileReader();r.onload=ev=>{try{data=normalizeData(JSON.parse(ev.target.result));saveData();render()}catch(err){alert("File JSON tidak valid.")}};r.readAsText(f)}
+
+    function makeBarcodeSVG(code){const text=String(code||"").toUpperCase();let x=0,bars="";for(let i=0;i<text.length;i++){const n=text.charCodeAt(i);for(let j=0;j<7;j++){const w=((n>>j)&1)?3:1;if(j%2===0)bars+=`<rect x="${x}" y="0" width="${w}" height="54" fill="#111827"/>`;x+=w+1}x+=2}return`<svg width="${x}" height="78" viewBox="0 0 ${x} 78" xmlns="http://www.w3.org/2000/svg"><rect width="100%" height="100%" fill="#fff"/>${bars}<text x="${x/2}" y="72" text-anchor="middle" font-family="Arial" font-size="12">${esc(text)}</text></svg>`}
+    function barcodeHTML(b){return`<div class="barcode-label"><b>${esc(data.settings.libraryName)}</b><br><small>${esc(b.title)} • ${esc(b.shelf||"-")}</small><div class="barcode-box">${makeBarcodeSVG(b.id)}</div></div>`}
+    function printBarcode(id){
+      const b=data.books.find(x=>x.id===id);
+      if(!b)return alert("Data buku tidak ditemukan.");
+      printDocument(`<div class="print-page">${barcodeHTML(b)}</div>`,"Barcode "+b.id);
+    }
+    function printAllBarcodes(){
+      if(!data.books.length)return alert("Belum ada buku untuk dicetak.");
+      printDocument(`<div class="print-page"><div class="print-grid">${data.books.map(barcodeHTML).join("")}</div></div>`,"Semua Barcode Buku");
+    }
+    function printMember(id){
+      const m=data.members.find(x=>x.id===id);
+      if(!m)return alert("Pilih anggota terlebih dahulu.");
+      printDocument(`<div class="print-page">${memberCard(m)}</div>`,"Kartu Anggota "+m.name);
+    }
+    function printHTML(html){
+      printDocument(html,"Cetak Perpustakaan");
+    }
+    function printDocument(html,title="Cetak"){
+      const frame=document.createElement("iframe");
+      frame.style.position="fixed";
+      frame.style.right="0";
+      frame.style.bottom="0";
+      frame.style.width="0";
+      frame.style.height="0";
+      frame.style.border="0";
+      document.body.appendChild(frame);
+
+      const doc=frame.contentWindow.document;
+      doc.open();
+      doc.write(`<!DOCTYPE html>
+        <html lang="id">
+        <head>
+          <meta charset="UTF-8">
+          <title>${esc(title)}</title>
+          <style>
+            *{box-sizing:border-box}
+            body{font-family:Arial,Helvetica,sans-serif;margin:0;padding:14mm;background:#fff;color:#111827}
+            .print-page{page-break-after:always}
+            .print-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+            .barcode-label{border:1px solid #d1d5db;border-radius:14px;padding:14px;background:#fff;break-inside:avoid;margin-bottom:12px}
+            .barcode-box{margin-top:10px;border:1px dashed #cbd5e1;border-radius:12px;padding:10px;text-align:center;background:#fff}
+            .member-card{min-height:250px;border-radius:20px;padding:20px;color:#fff;background:linear-gradient(135deg,#2f7d7e,#f7b7c8);background-size:cover;background-position:center;overflow:hidden;position:relative}
+            .member-card::before{content:"";position:absolute;inset:0;background:rgba(15,23,42,.18);pointer-events:none}
+            .member-content{position:relative;z-index:1;background:rgba(15,23,42,.48);border:1px solid rgba(255,255,255,.18);border-radius:16px;padding:15px}
+            .member-name{font-size:26px;font-weight:900;margin:14px 0}
+            .member-details{display:grid;grid-template-columns:1fr 1fr;gap:10px;background:rgba(255,255,255,.11);border-radius:14px;padding:12px}
+            .logo{width:48px;height:48px;border-radius:15px;background:#f6c453;display:grid;place-items:center;color:#fff;font-weight:900;overflow:hidden;flex:0 0 auto}
+            .logo img{width:100%;height:100%;object-fit:cover}
+            @media print{body{padding:10mm}.print-page{page-break-after:always}.barcode-label{break-inside:avoid}}
+          </style>
+        </head>
+        <body>${html}</body>
+        </html>`);
+      doc.close();
+
+      frame.onload=function(){
+        try{
+          frame.contentWindow.focus();
+          frame.contentWindow.print();
+        }catch(e){
+          alert("Dialog print gagal dibuka. Coba gunakan browser Chrome/Edge dan izinkan print.");
+        }
+        setTimeout(()=>frame.remove(),1000);
+      };
+
+      setTimeout(()=>{
+        try{
+          frame.contentWindow.focus();
+          frame.contentWindow.print();
+        }catch(e){}
+        setTimeout(()=>frame.remove(),1500);
+      },300);
+    }
+
+    render();
+    initFirebase();
+  </script>
+</body>
+</html>
